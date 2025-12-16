@@ -1,0 +1,304 @@
+{
+  "contractName": "Personas",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/persona.sol\":\"Personas\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/persona.sol\":{\"keccak256\":\"0x0622d9cf7e55e445a9f5ad0ab773979acbd5022f54294b2e7b0ce49d791fcf8b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ccf385957f8d0665d39d135d87d670e7a3468c39f0cbdbc359a6f1dd368221bc\",\"dweb:/ipfs/QmadFEHMv34gBm8FxvemCVC2QMcTq9e7GKPiApM9LsfniT\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212202076fef3c3817afc4c128d5210c2ac83ca72875671cfa8a767bc23312702440164736f6c63430008130033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212202076fef3c3817afc4c128d5210c2ac83ca72875671cfa8a767bc23312702440164736f6c63430008130033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "60:240:3:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "60:240:3:-:0;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ncontract Personas {\r\n    struct Persona {\r\n        uint id;\r\n        string nombre;\r\n        string cedula;\r\n        string email;\r\n        string direccion;\r\n        uint edad;\r\n        bool activa;\r\n        uint256 fechaCreacion;\r\n    } }",
+  "sourcePath": "C:\\Users\\Isaac\\Desktop\\ganache\\wallet\\contracts\\persona.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/persona.sol",
+    "exportedSymbols": {
+      "Personas": [
+        632
+      ]
+    },
+    "id": 633,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 614,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:3"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "Personas",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 632,
+        "linearizedBaseContracts": [
+          632
+        ],
+        "name": "Personas",
+        "nameLocation": "69:8:3",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "Personas.Persona",
+            "id": 631,
+            "members": [
+              {
+                "constant": false,
+                "id": 616,
+                "mutability": "mutable",
+                "name": "id",
+                "nameLocation": "116:2:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 631,
+                "src": "111:7:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 615,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "111:4:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 618,
+                "mutability": "mutable",
+                "name": "nombre",
+                "nameLocation": "136:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 631,
+                "src": "129:13:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 617,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "129:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 620,
+                "mutability": "mutable",
+                "name": "cedula",
+                "nameLocation": "160:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 631,
+                "src": "153:13:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 619,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "153:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 622,
+                "mutability": "mutable",
+                "name": "email",
+                "nameLocation": "184:5:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 631,
+                "src": "177:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 621,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "177:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 624,
+                "mutability": "mutable",
+                "name": "direccion",
+                "nameLocation": "207:9:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 631,
+                "src": "200:16:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                },
+                "typeName": {
+                  "id": 623,
+                  "name": "string",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "200:6:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_storage_ptr",
+                    "typeString": "string"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 626,
+                "mutability": "mutable",
+                "name": "edad",
+                "nameLocation": "232:4:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 631,
+                "src": "227:9:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 625,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "227:4:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 628,
+                "mutability": "mutable",
+                "name": "activa",
+                "nameLocation": "252:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 631,
+                "src": "247:11:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 627,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "247:4:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 630,
+                "mutability": "mutable",
+                "name": "fechaCreacion",
+                "nameLocation": "277:13:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 631,
+                "src": "269:21:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 629,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "269:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Persona",
+            "nameLocation": "92:7:3",
+            "nodeType": "StructDefinition",
+            "scope": 632,
+            "src": "85:213:3",
+            "visibility": "public"
+          }
+        ],
+        "scope": 633,
+        "src": "60:240:3",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:267:3"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.19+commit.7dd6d404.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.16",
+  "updatedAt": "2025-12-16T03:15:10.732Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
