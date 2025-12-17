@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import config from './config.json';
+import CurrencyTable, { MOCK_CURRENCIES, type Currency } from './components/CurrencyTable';
 
 interface MarketProps {
     account: string;
@@ -13,6 +14,7 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
     const [sellAmount, setSellAmount] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState('');
+    const [selectedCurrency, setSelectedCurrency] = useState<Currency>(MOCK_CURRENCIES[0]);
 
     // Initialize Web3 and Contracts with useMemo to prevent re-instantiation on every render (Fixes MaxListenersExceededWarning)
     const { web3Instance, tokenContract, marketContract, fiatContract } = React.useMemo(() => {
@@ -44,6 +46,13 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
 
     const handleBuy = async () => {
         if (!buyAmount) return;
+
+        if (selectedCurrency.id !== 'tstk') {
+            setStatus(`Simulación: Comprando ${selectedCurrency.name}...`);
+            setTimeout(() => setStatus('¡Compra Simulada Exitosa!'), 1500);
+            return;
+        }
+
         setLoading(true);
         setStatus('Aprobando Dólares...');
         try {
@@ -108,18 +117,20 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
                     <p className="balance">${parseFloat(ethBalance).toFixed(2)}</p>
                 </div>
                 <div className="stat-card gradient-2">
-                    <h3>Tus Acciones (TSTK)</h3>
-                    <p className="balance">{tokenBalance} TSTK</p>
+                    <h3>Tus Acciones ({selectedCurrency.symbol})</h3>
+                    <p className="balance">{selectedCurrency.id === 'tstk' ? tokenBalance : '0.00'} {selectedCurrency.symbol}</p>
                 </div>
                 <div className="stat-card glass">
                     <h3>Tasa de Cambio</h3>
-                    <p className="rate">1 USDX = 100 TSTK</p>
+                    <p className="rate">1 {selectedCurrency.symbol} = ${selectedCurrency.price.toLocaleString()} USDX</p>
                 </div>
             </div>
 
+            <CurrencyTable selectedSymbol={selectedCurrency.symbol} onSelect={setSelectedCurrency} />
+
             <div className="trade-section">
                 <div className="trade-card buy">
-                    <h3>Comprar Acciones</h3>
+                    <h3>Comprar {selectedCurrency.name}</h3>
                     <div className="input-group">
                         <label>Cantidad en USDX</label>
                         <input
@@ -130,15 +141,15 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
                         />
                     </div>
                     <button onClick={handleBuy} disabled={loading} className="action-btn buy-btn">
-                        {loading ? 'Procesando...' : 'Comprar TSTK'}
+                        {loading ? 'Procesando...' : `Comprar ${selectedCurrency.symbol}`}
                     </button>
                     <p className="hint-text">*Requiere aprobación previa</p>
                 </div>
 
                 <div className="trade-card sell">
-                    <h3>Vender Acciones</h3>
+                    <h3>Vender {selectedCurrency.name}</h3>
                     <div className="input-group">
-                        <label>Cantidad en TSTK</label>
+                        <label>Cantidad en {selectedCurrency.symbol}</label>
                         <input
                             type="number"
                             placeholder="0"
@@ -147,7 +158,7 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
                         />
                     </div>
                     <button onClick={handleSell} disabled={loading} className="action-btn sell-btn">
-                        {loading ? 'Procesando...' : 'Vender TSTK'}
+                        {loading ? 'Procesando...' : `Vender ${selectedCurrency.symbol}`}
                     </button>
                 </div>
             </div>
