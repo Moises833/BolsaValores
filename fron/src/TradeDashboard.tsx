@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import config from './config.json';
 import CurrencyTable, { MOCK_CURRENCIES, type Currency } from './components/CurrencyTable';
+import TransactionHistory from './components/TransactionHistory';
 
 interface MarketProps {
     account: string;
@@ -14,7 +15,11 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
     const [sellAmount, setSellAmount] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState('');
+
     const [selectedCurrency, setSelectedCurrency] = useState<Currency>(MOCK_CURRENCIES[0]);
+    const [activeTab, setActiveTab] = useState<'market' | 'history'>('market');
+    const [marketBalance, setMarketBalance] = useState<string>('0');
+    const [contractRate, setContractRate] = useState<number>(0);
 
     // Initialize Web3 and Contracts with useMemo to prevent re-instantiation on every render (Fixes MaxListenersExceededWarning)
     const { web3Instance, tokenContract, marketContract, fiatContract } = React.useMemo(() => {
@@ -33,6 +38,14 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
             const fb = await fiatContract.methods.balanceOf(account).call();
             setTokenBalance(web3Instance.utils.fromWei(tb as any, 'ether'));
             setEthBalance(web3Instance.utils.fromWei(fb as any, 'ether')); // Reusing ethBalance var for Fiat to minimize changes
+
+            // Load Market Balance (Liquidity)
+            const mb = await tokenContract.methods.balanceOf(config.marketAddress).call();
+            setMarketBalance(web3Instance.utils.fromWei(mb as any, 'ether'));
+
+            // Load Contract Rate
+            const r = await marketContract.methods.rate().call();
+            setContractRate(Number(r));
         } catch (e) {
             console.error("Error loading balances:", e);
         }
@@ -42,7 +55,7 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
         loadBalances();
         const interval = setInterval(loadBalances, 5000);
         return () => clearInterval(interval);
-    }, [account]);
+    }, [account, web3Instance]);
 
     const handleBuy = async () => {
         if (!buyAmount) return;
@@ -57,6 +70,24 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
         setStatus('Aprobando Dólares...');
         try {
             const amountWei = web3Instance.utils.toWei(buyAmount, 'ether');
+            const amountNum = parseFloat(buyAmount);
+
+            // Check User Fiat Balance
+            if (amountNum > parseFloat(ethBalance)) {
+                setStatus('Error: Fondos insuficientes de USDX.');
+                setLoading(false);
+                return;
+            }
+
+            // Check Market Liquidity
+            if (contractRate > 0) {
+                const expectedTokens = amountNum * contractRate;
+                if (expectedTokens > parseFloat(marketBalance)) {
+                    setStatus(`Error: El Mercado no tiene suficiente liquidez. Disponible: ${marketBalance} TSTK`);
+                    setLoading(false);
+                    return;
+                }
+            }
 
             // 1. Approve Market to spend Fiat
             await fiatContract.methods.approve(config.marketAddress, amountWei).send({ from: account });
@@ -126,42 +157,67 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
                 </div>
             </div>
 
-            <CurrencyTable selectedSymbol={selectedCurrency.symbol} onSelect={setSelectedCurrency} />
-
-            <div className="trade-section">
-                <div className="trade-card buy">
-                    <h3>Comprar {selectedCurrency.name}</h3>
-                    <div className="input-group">
-                        <label>Cantidad en USDX</label>
-                        <input
-                            type="number"
-                            placeholder="0.0"
-                            value={buyAmount}
-                            onChange={(e) => setBuyAmount(e.target.value)}
-                        />
-                    </div>
-                    <button onClick={handleBuy} disabled={loading} className="action-btn buy-btn">
-                        {loading ? 'Procesando...' : `Comprar ${selectedCurrency.symbol}`}
-                    </button>
-                    <p className="hint-text">*Requiere aprobación previa</p>
-                </div>
-
-                <div className="trade-card sell">
-                    <h3>Vender {selectedCurrency.name}</h3>
-                    <div className="input-group">
-                        <label>Cantidad en {selectedCurrency.symbol}</label>
-                        <input
-                            type="number"
-                            placeholder="0"
-                            value={sellAmount}
-                            onChange={(e) => setSellAmount(e.target.value)}
-                        />
-                    </div>
-                    <button onClick={handleSell} disabled={loading} className="action-btn sell-btn">
-                        {loading ? 'Procesando...' : `Vender ${selectedCurrency.symbol}`}
-                    </button>
-                </div>
+            <div className="tabs-container">
+                <button
+                    className={`tab-btn ${activeTab === 'market' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('market')}
+                >
+                    Mercado
+                </button>
+                <button
+                    className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('history')}
+                >
+                    Historial
+                </button>
             </div>
+
+            {activeTab === 'market' ? (
+                <>
+                    <CurrencyTable selectedSymbol={selectedCurrency.symbol} onSelect={setSelectedCurrency} />
+
+                    <div className="trade-section">
+                        <div className="trade-card buy">
+                            <h3>Comprar {selectedCurrency.name}</h3>
+                            <div className="input-group">
+                                <label>Cantidad en USDX</label>
+                                <input
+                                    type="number"
+                                    placeholder="0.0"
+                                    value={buyAmount}
+                                    onChange={(e) => setBuyAmount(e.target.value)}
+                                />
+                            </div>
+                            <button onClick={handleBuy} disabled={loading} className="action-btn buy-btn">
+                                {loading ? 'Procesando...' : `Comprar ${selectedCurrency.symbol}`}
+                            </button>
+                            <p className="hint-text">*Requiere aprobación previa</p>
+                        </div>
+
+                        <div className="trade-card sell">
+                            <h3>Vender {selectedCurrency.name}</h3>
+                            <div className="input-group">
+                                <label>Cantidad en {selectedCurrency.symbol}</label>
+                                <input
+                                    type="number"
+                                    placeholder="0"
+                                    value={sellAmount}
+                                    onChange={(e) => setSellAmount(e.target.value)}
+                                />
+                            </div>
+                            <button onClick={handleSell} disabled={loading} className="action-btn sell-btn">
+                                {loading ? 'Procesando...' : `Vender ${selectedCurrency.symbol}`}
+                            </button>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <TransactionHistory
+                    account={account}
+                    marketContract={marketContract}
+                    web3={web3Instance}
+                />
+            )}
 
             {status && <div className="status-toast">{status}</div>}
 
@@ -185,6 +241,54 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     position: relative;
                     overflow: hidden;
+                    transition: transform 0.2s;
+                }
+
+                .stat-card:hover {
+                    transform: translateY(-5px);
+                }
+
+                /* Tab Styles */
+                .tabs-container {
+                    display: flex;
+                    gap: 1rem;
+                    margin-bottom: 2rem;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    padding-bottom: 0.5rem;
+                }
+
+                .tab-btn {
+                    background: transparent;
+                    border: none;
+                    color: #94a3b8;
+                    padding: 0.75rem 1.5rem;
+                    font-size: 1rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    border-radius: 0.5rem;
+                    transition: all 0.2s;
+                    position: relative;
+                }
+
+                .tab-btn:hover {
+                    color: white;
+                    background: rgba(255, 255, 255, 0.05);
+                }
+
+                .tab-btn.active {
+                    color: white;
+                    background: rgba(99, 102, 241, 0.1);
+                }
+
+                .tab-btn.active::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -0.6rem;
+                    left: 0;
+                    right: 0;
+                    height: 2px;
+                    background: #6366f1;
+                    border-radius: 2px 2px 0 0;
                 }
 
                 .gradient-1 {
