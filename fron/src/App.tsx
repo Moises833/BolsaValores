@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
+import PublicProfile from './pages/PublicProfile';
 import Header from './components/Header';
 
 function DashboardWrapper() {
@@ -62,6 +63,7 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<DashboardWrapper />} />
             <Route path="/profile" element={<ProfileWrapper />} />
+            <Route path="/trader/:cedula" element={<PublicProfile />} />
           </Route>
         </Routes>
       </AuthProvider>

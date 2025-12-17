@@ -1,7 +1,8 @@
 import { useAuth } from '../context/AuthContext';
-import { User, Wallet, Shield } from 'lucide-react';
+import { User, Wallet, Shield, Mail, CreditCard, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import './Profile.css'; // We'll create a specific CSS for profile or add to App.css
+import './Profile.css';
 
 interface ProfileProps {
     account: string | null;
@@ -9,12 +10,16 @@ interface ProfileProps {
 
 export default function Profile({ account }: ProfileProps) {
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     return (
         <div className="profile-page">
             <Header account={account} />
             <div className="profile-container">
                 <div className="profile-card">
+                    <button className="back-btn" onClick={() => navigate('/')}>
+                        <ArrowLeft size={24} />
+                    </button>
                     <div className="profile-header">
                         <div className="avatar-large">
                             <User size={64} color="white" />
@@ -24,6 +29,22 @@ export default function Profile({ account }: ProfileProps) {
                     </div>
 
                     <div className="profile-details">
+                        <div className="detail-item">
+                            <div className="icon-box"><Mail size={24} /></div>
+                            <div className="detail-info">
+                                <label>Correo Electrónico</label>
+                                <div className="info-text">{user?.email}</div>
+                            </div>
+                        </div>
+
+                        <div className="detail-item">
+                            <div className="icon-box"><CreditCard size={24} /></div>
+                            <div className="detail-info">
+                                <label>Cédula de Identidad</label>
+                                <div className="info-text">{user?.cedula}</div>
+                            </div>
+                        </div>
+
                         <div className="detail-item">
                             <div className="icon-box"><Wallet size={24} /></div>
                             <div className="detail-info">

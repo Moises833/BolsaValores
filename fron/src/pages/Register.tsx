@@ -5,6 +5,8 @@ import { UserPlus } from 'lucide-react';
 
 export default function Register() {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [cedula, setCedula] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
@@ -30,14 +32,14 @@ export default function Register() {
         setLoading(true);
 
         try {
-            const success = await register(username, password);
-            if (success) {
+            const result = await register(username, email, cedula, password);
+            if (result.success) {
                 navigate('/');
             } else {
-                setError('El usuario ya existe');
+                setError(result.message || 'Error al registrarse');
             }
         } catch (err) {
-            setError('Ocurrió un error al registrarse');
+            setError('Ocurrió un error al intentar registrarse');
         } finally {
             setLoading(false);
         }
@@ -54,14 +56,38 @@ export default function Register() {
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="username">Usuario</label>
+                        <label htmlFor="username">Nombre de Usuario</label>
                         <input
                             type="text"
                             id="username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             required
-                            placeholder="Elige un nombre de usuario"
+                            placeholder="Ej. CryptoTrader"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="email">Correo Electrónico</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            placeholder="tu@email.com"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="cedula">Cédula de Identidad</label>
+                        <input
+                            type="text"
+                            id="cedula"
+                            value={cedula}
+                            onChange={(e) => setCedula(e.target.value)}
+                            required
+                            placeholder="Ej. 12345678"
                         />
                     </div>
 

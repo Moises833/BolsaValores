@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 
 export default function Login() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const success = await login(username, password);
+            const success = await login(email, password);
             if (success) {
                 navigate('/');
             } else {
@@ -42,14 +42,14 @@ export default function Login() {
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="username">Usuario</label>
+                        <label htmlFor="email">Correo Electrónico</label>
                         <input
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
-                            placeholder="Ingresa tu usuario"
+                            placeholder="tu@email.com"
                         />
                     </div>
 

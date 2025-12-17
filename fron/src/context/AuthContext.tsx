@@ -2,12 +2,14 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 
 interface User {
     username: string;
+    email: string;
+    cedula: string;
 }
 
 interface AuthContextType {
     user: User | null;
-    login: (username: string, password: string) => Promise<boolean>;
-    register: (username: string, password: string) => Promise<boolean>;
+    login: (email: string, password: string) => Promise<boolean>;
+    register: (username: string, email: string, cedula: string, password: string) => Promise<{ success: boolean; message?: string }>;
     logout: () => void;
     isAuthenticated: boolean;
 }
@@ -25,18 +27,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
-    const login = async (username: string, password: string): Promise<boolean> => {
+    const login = async (email: string, password: string): Promise<boolean> => {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 500));
 
         // Check against "database" (localStorage)
         const users = JSON.parse(localStorage.getItem('users') || '[]');
 
-        // Simple check in array of objects
-        const foundUser = users.find((u: any) => u.username === username && u.password === password);
+        // Check using EMAIL instead of username
+        const foundUser = users.find((u: any) => u.email === email && u.password === password);
 
         if (foundUser) {
-            const userData = { username: foundUser.username };
+            const userData = {
+                username: foundUser.username,
+                email: foundUser.email,
+                cedula: foundUser.cedula
+            };
             setUser(userData);
             localStorage.setItem('currentUser', JSON.stringify(userData));
             return true;
@@ -44,25 +50,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return false;
     };
 
-    const register = async (username: string, password: string): Promise<boolean> => {
+    const register = async (username: string, email: string, cedula: string, password: string): Promise<{ success: boolean; message?: string }> => {
         await new Promise(resolve => setTimeout(resolve, 500));
 
         const users = JSON.parse(localStorage.getItem('users') || '[]');
 
-        if (users.find((u: any) => u.username === username)) {
-            return false; // User exists
+        // Check duplicates
+        if (users.find((u: any) => u.email === email)) {
+            return { success: false, message: 'El correo electrónico ya está registrado.' };
         }
 
-        const newUser = { username, password }; // In real app, hash password!
+        if (users.find((u: any) => u.cedula === cedula)) {
+            return { success: false, message: 'La cédula ya está registrada.' };
+        }
+
+        const newUser = { username, email, cedula, password };
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
 
         // Auto login after register
-        const userData = { username };
+        const userData = { username, email, cedula };
         setUser(userData);
         localStorage.setItem('currentUser', JSON.stringify(userData));
 
-        return true;
+        return { success: true };
     };
 
     const logout = () => {

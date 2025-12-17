@@ -93,6 +93,14 @@ Verás 3 tarjetas:
 
 ---
 
+### 🔐 Autenticación y Perfil
+1.  **Registro**: Selecciona "¿No tienes cuenta? Registrate aquí" para crear un usuario.
+2.  **Login**: Ingresa con tu usuario y contraseña.
+3.  **Perfil**: Haz clic en tu nombre en la esquina superior derecha y selecciona "Mi Perfil" para ver tus detalles.
+4.  **Cerrar Sesión**: Usa la opción "Cerrar Sesión" en el menú desplegable para salir.
+
+---
+
 ## ⚠️ Solución de Problemas Comunes
 
 *   **Error "User denied transaction"**:
@@ -101,3 +109,5 @@ Verás 3 tarjetas:
     *   Si ves un botón rojo que dice **`@ Revisar alerta`**, haz clic en él y acepta la advertencia de seguridad. Es normal en redes de prueba.
 *   **El saldo sale en 0 pero en Ganache tengo ETH**:
     *   Recuerda que ahora usamos **USDX**, no ETH. Ejecuta `node deploy.js` para recibir tus USDX ficticios.
+*   **No puedo entrar al Dashboard**:
+    *   Asegúrate de haber iniciado sesión. El sistema protege las rutas privadas.
