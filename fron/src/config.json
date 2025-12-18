@@ -1,5 +1,5 @@
 {
-  "tokenAddress": "0x7E210146EDCC513263AEF6a44442B4EeF7b02d8e",
+  "tokenAddress": "0xD196647A8a3203faf3d64D7e4Bc852b527d71ea0",
   "tokenAbi": [
     {
       "inputs": [
@@ -235,7 +235,7 @@
       "type": "function"
     }
   ],
-  "fiatAddress": "0x7A38a8a30249f95504FC40F74016247C6aaA0Af5",
+  "fiatAddress": "0xe8a2c3b5c65A27a9d7bC32a363Dc71e922ec67E5",
   "fiatAbi": [
     {
       "inputs": [
@@ -471,7 +471,7 @@
       "type": "function"
     }
   ],
-  "marketAddress": "0x9D4DA76Dd135Ea006A52E5623C5Cfdb21b82fAb1",
+  "marketAddress": "0x3ce25502DEBCb023c3781401B523b8617A203172",
   "marketAbi": [
     {
       "inputs": [

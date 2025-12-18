@@ -83,7 +83,7 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ninterface IERC20 {\r\n    function transfer(address to, uint256 amount) external returns (bool);\r\n    function transferFrom(\r\n        address from,\r\n        address to,\r\n        uint256 amount\r\n    ) external returns (bool);\r\n    function balanceOf(address account) external view returns (uint256);\r\n}\r\n\r\ncontract Market {\r\n    IERC20 public stockToken;\r\n    IERC20 public fiatToken; // The \"Fake Money\" token\r\n    uint256 public rate = 100; // 1 Fiat = 100 Stock\r\n\r\n    event TokensPurchased(\r\n        address indexed buyer,\r\n        uint256 amountOfFiat,\r\n        uint256 amountOfStock\r\n    );\r\n    event TokensSold(\r\n        address indexed seller,\r\n        uint256 amountOfStock,\r\n        uint256 amountOfFiat\r\n    );\r\n\r\n    constructor(address _stockToken, address _fiatToken) {\r\n        stockToken = IERC20(_stockToken);\r\n        fiatToken = IERC20(_fiatToken);\r\n    }\r\n\r\n    // Buy Stock with Fiat\r\n    function buyTokens(uint256 _fiatAmount) public {\r\n        // Calculate stock amount: if rate is 100, 1 Fiat = 100 Stocks\r\n        // But tokens use 18 decimals, so math is simple direct multiplication if decimals match\r\n        uint256 stockAmount = _fiatAmount * rate;\r\n\r\n        require(\r\n            stockToken.balanceOf(address(this)) >= stockAmount,\r\n            \"Not enough stocks in market\"\r\n        );\r\n\r\n        // Transfer Fiat from User -> Market\r\n        require(\r\n            fiatToken.transferFrom(msg.sender, address(this), _fiatAmount),\r\n            \"Fiat transfer failed\"\r\n        );\r\n\r\n        // Transfer Stock from Market -> User\r\n        require(\r\n            stockToken.transfer(msg.sender, stockAmount),\r\n            \"Stock transfer failed\"\r\n        );\r\n\r\n        emit TokensPurchased(msg.sender, _fiatAmount, stockAmount);\r\n    }\r\n\r\n    // Sell Stock for Fiat\r\n    function sellTokens(uint256 _stockAmount) public {\r\n        require(\r\n            stockToken.balanceOf(address(this)) >= _stockAmount,\r\n            \"Sanity check failed\"\r\n        ); // Not strictly needed but good for checking approvals? No.\r\n\r\n        uint256 fiatAmount = _stockAmount / rate;\r\n\r\n        require(\r\n            fiatToken.balanceOf(address(this)) >= fiatAmount,\r\n            \"Not enough liquidity (fiat) in market\"\r\n        );\r\n\r\n        // Transfer Stock from User -> Market\r\n        require(\r\n            stockToken.transferFrom(msg.sender, address(this), _stockAmount),\r\n            \"Stock transfer failed\"\r\n        );\r\n\r\n        // Transfer Fiat from Market -> User\r\n        require(\r\n            fiatToken.transfer(msg.sender, fiatAmount),\r\n            \"Fiat transfer failed\"\r\n        );\r\n\r\n        emit TokensSold(msg.sender, _stockAmount, fiatAmount);\r\n    }\r\n}\r\n",
-  "sourcePath": "C:\\Users\\Isaac\\Desktop\\ganache\\wallet\\contracts\\Market.sol",
+  "sourcePath": "C:\\Users\\Davi\\Downloads\\SmartContracts\\bolsas-de-valores\\wallet\\contracts\\Market.sol",
   "ast": {
     "absolutePath": "project:/contracts/Market.sol",
     "exportedSymbols": {
@@ -2929,7 +2929,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-12-16T03:15:10.714Z",
+  "updatedAt": "2025-12-18T04:19:40.508Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

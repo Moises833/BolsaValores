@@ -10,7 +10,7 @@
   "sourceMap": "60:240:3:-:0;;;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "60:240:3:-:0;;;;;",
   "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.0;\r\n\r\ncontract Personas {\r\n    struct Persona {\r\n        uint id;\r\n        string nombre;\r\n        string cedula;\r\n        string email;\r\n        string direccion;\r\n        uint edad;\r\n        bool activa;\r\n        uint256 fechaCreacion;\r\n    } }",
-  "sourcePath": "C:\\Users\\Isaac\\Desktop\\ganache\\wallet\\contracts\\persona.sol",
+  "sourcePath": "C:\\Users\\Davi\\Downloads\\SmartContracts\\bolsas-de-valores\\wallet\\contracts\\persona.sol",
   "ast": {
     "absolutePath": "project:/contracts/persona.sol",
     "exportedSymbols": {
@@ -290,7 +290,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-12-16T03:15:10.732Z",
+  "updatedAt": "2025-12-18T04:19:40.516Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

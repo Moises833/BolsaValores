@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import config from './config.json';
 import CurrencyTable, { MOCK_CURRENCIES, type Currency } from './components/CurrencyTable';
+import StockTable, { MOCK_STOCKS, type Stock } from './components/StockTable';
 import TransactionHistory from './components/TransactionHistory';
 
 interface MarketProps {
@@ -16,10 +17,29 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState('');
 
-    const [selectedCurrency, setSelectedCurrency] = useState<Currency>(MOCK_CURRENCIES[0]);
+    const [selectedCurrency, setSelectedCurrency] = useState<Currency | Stock>(MOCK_CURRENCIES[0]);
     const [activeTab, setActiveTab] = useState<'market' | 'history'>('market');
     const [marketBalance, setMarketBalance] = useState<string>('0');
     const [contractRate, setContractRate] = useState<number>(0);
+    const [virtualBalances, setVirtualBalances] = useState<{ [symbol: string]: number }>({});
+
+    // Load Virtual Balances from LocalStorage
+    useEffect(() => {
+        if (!account) return;
+        const saved = localStorage.getItem(`virtual_balances_${account}`);
+        if (saved) {
+            setVirtualBalances(JSON.parse(saved));
+        }
+    }, [account]);
+
+    const updateVirtualBalance = (symbol: string, amount: number, isBuy: boolean) => {
+        const current = virtualBalances[symbol] || 0;
+        const newBalance = isBuy ? current + amount : current - amount;
+
+        const newBalances = { ...virtualBalances, [symbol]: newBalance };
+        setVirtualBalances(newBalances);
+        localStorage.setItem(`virtual_balances_${account}`, JSON.stringify(newBalances));
+    };
 
     // Initialize Web3 and Contracts with useMemo to prevent re-instantiation on every render (Fixes MaxListenersExceededWarning)
     const { web3Instance, tokenContract, marketContract, fiatContract } = React.useMemo(() => {
@@ -61,8 +81,28 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
         if (!buyAmount) return;
 
         if (selectedCurrency.id !== 'tstk') {
-            setStatus(`Simulación: Comprando ${selectedCurrency.name}...`);
-            setTimeout(() => setStatus('¡Compra Simulada Exitosa!'), 1500);
+            setLoading(true);
+            setStatus(`Simulando compra de ${selectedCurrency.name} via MetaMask...`);
+            try {
+                // Fictitious transaction: Send 0 ETH to self
+                await web3Instance.eth.sendTransaction({
+                    from: account,
+                    to: account,
+                    value: '0'
+                });
+
+                // Update Virtual Balance
+                const amountCoin = parseFloat(buyAmount) / selectedCurrency.price; // USDX / Price = Coins
+                updateVirtualBalance(selectedCurrency.symbol, amountCoin, true);
+
+                setStatus(`¡Compra de ${amountCoin.toFixed(4)} ${selectedCurrency.symbol} (Simulada) Exitosa!`);
+                setBuyAmount('');
+            } catch (err: any) {
+                console.error(err);
+                if (err.code === 4001) setStatus('Simulación rechazada por el usuario.');
+                else setStatus(`Error en simulación: ${err.message || JSON.stringify(err)}`);
+            }
+            setLoading(false);
             return;
         }
 
@@ -114,6 +154,40 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
 
     const handleSell = async () => {
         if (!sellAmount) return;
+
+        if (selectedCurrency.id !== 'tstk') {
+            const amountToSell = parseFloat(sellAmount);
+            const currentBalance = virtualBalances[selectedCurrency.symbol] || 0;
+
+            if (amountToSell > currentBalance) {
+                setStatus(`Error: No tienes suficientes ${selectedCurrency.symbol}. Balance: ${currentBalance}`);
+                return;
+            }
+
+            setLoading(true);
+            setStatus(`Simulando venta de ${selectedCurrency.name} via MetaMask...`);
+            try {
+                // Fictitious transaction: Send 0 ETH to self
+                await web3Instance.eth.sendTransaction({
+                    from: account,
+                    to: account,
+                    value: '0'
+                });
+
+                // Update Virtual Balance
+                updateVirtualBalance(selectedCurrency.symbol, amountToSell, false);
+
+                setStatus(`¡Venta de ${amountToSell} ${selectedCurrency.symbol} (Simulada) Exitosa!`);
+                setSellAmount('');
+            } catch (err: any) {
+                console.error(err);
+                if (err.code === 4001) setStatus('Simulación rechazada por el usuario.');
+                else setStatus(`Error en simulación: ${err.message || JSON.stringify(err)}`);
+            }
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         setStatus('Aprobando Acciones...');
         try {
@@ -149,7 +223,11 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
                 </div>
                 <div className="stat-card gradient-2">
                     <h3>Tus Acciones ({selectedCurrency.symbol})</h3>
-                    <p className="balance">{selectedCurrency.id === 'tstk' ? tokenBalance : '0.00'} {selectedCurrency.symbol}</p>
+                    <p className="balance">
+                        {selectedCurrency.id === 'tstk'
+                            ? `${tokenBalance} TSTK`
+                            : `${(virtualBalances[selectedCurrency.symbol] || 0).toFixed(4)} ${selectedCurrency.symbol}`}
+                    </p>
                 </div>
                 <div className="stat-card glass">
                     <h3>Tasa de Cambio</h3>
@@ -174,7 +252,17 @@ const TradeDashboard: React.FC<MarketProps> = ({ account }) => {
 
             {activeTab === 'market' ? (
                 <>
-                    <CurrencyTable selectedSymbol={selectedCurrency.symbol} onSelect={setSelectedCurrency} />
+                    <StockTable
+                        selectedSymbol={selectedCurrency.symbol}
+                        onSelect={setSelectedCurrency}
+                        balances={virtualBalances}
+                    />
+
+                    <CurrencyTable
+                        selectedSymbol={selectedCurrency.symbol}
+                        onSelect={setSelectedCurrency}
+                        balances={virtualBalances}
+                    />
 
                     <div className="trade-section">
                         <div className="trade-card buy">

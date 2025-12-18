@@ -66,8 +66,8 @@ const deploy = async () => {
         // Give Market 80% of Stocks
         await stockTokenInstance.methods.transfer(marketInstance.options.address, web3.utils.toWei('800000', 'ether')).send({ from: deployer });
 
-        // Give Market 50% of Fiat liquidity
-        await fiatTokenInstance.methods.transfer(marketInstance.options.address, web3.utils.toWei('500000', 'ether')).send({ from: deployer });
+        // Give Market 70% of Fiat liquidity (leaving 300,000 for the user)
+        await fiatTokenInstance.methods.transfer(marketInstance.options.address, web3.utils.toWei('700000', 'ether')).send({ from: deployer });
 
         console.log('Setup complete: Funds distributed.');
 

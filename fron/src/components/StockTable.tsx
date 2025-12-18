@@ -1,8 +1,7 @@
-
-import { ArrowUpRight, ArrowDownRight, Bitcoin, Cpu, Globe, Zap, Database, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, Apple, Search, ShoppingCart, Zap, Cpu, Users, Tv, ArrowUp, ArrowDown } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
-export interface Currency {
+export interface Stock {
     id: string;
     symbol: string;
     name: string;
@@ -11,12 +10,15 @@ export interface Currency {
     icon: any;
 }
 
-export const MOCK_CURRENCIES: Currency[] = [
-    { id: 'tstk', symbol: 'TSTK', name: 'TechStock Token', price: 0.01, change: 2.5, icon: Zap },
-    { id: 'btc', symbol: 'BTC', name: 'Bitcoin', price: 45000, change: -1.2, icon: Bitcoin },
-    { id: 'eth', symbol: 'ETH', name: 'Ethereum', price: 3200, change: 0.8, icon: Database },
-    { id: 'sol', symbol: 'SOL', name: 'Solana', price: 110, change: 5.4, icon: Cpu },
-    { id: 'ada', symbol: 'ADA', name: 'Cardano', price: 0.55, change: -0.5, icon: Globe },
+export const MOCK_STOCKS: Stock[] = [
+    { id: 'aapl', symbol: 'AAPL', name: 'Apple Inc.', price: 185.50, change: 1.8, icon: Apple },
+    { id: 'msft', symbol: 'MSFT', name: 'Microsoft Corp.', price: 378.25, change: 0.5, icon: Cpu },
+    { id: 'googl', symbol: 'GOOGL', name: 'Alphabet Inc.', price: 142.80, change: -0.3, icon: Search },
+    { id: 'amzn', symbol: 'AMZN', name: 'Amazon.com Inc.', price: 155.30, change: 2.1, icon: ShoppingCart },
+    { id: 'tsla', symbol: 'TSLA', name: 'Tesla Inc.', price: 248.75, change: -1.5, icon: Zap },
+    { id: 'nvda', symbol: 'NVDA', name: 'NVIDIA Corp.', price: 495.20, change: 3.4, icon: Cpu },
+    { id: 'meta', symbol: 'META', name: 'Meta Platforms', price: 352.90, change: 1.2, icon: Users },
+    { id: 'nflx', symbol: 'NFLX', name: 'Netflix Inc.', price: 485.60, change: -0.8, icon: Tv },
 ];
 
 type SortField = 'name' | 'price' | 'change' | 'balance';
@@ -24,11 +26,11 @@ type SortDirection = 'asc' | 'desc';
 
 interface Props {
     selectedSymbol: string;
-    onSelect: (currency: Currency) => void;
+    onSelect: (stock: Stock) => void;
     balances: { [symbol: string]: number };
 }
 
-export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Props) {
+export default function StockTable({ selectedSymbol, onSelect, balances }: Props) {
     const [sortField, setSortField] = useState<SortField>('name');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
@@ -41,8 +43,8 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
         }
     };
 
-    const sortedCurrencies = useMemo(() => {
-        const sorted = [...MOCK_CURRENCIES].sort((a, b) => {
+    const sortedStocks = useMemo(() => {
+        const sorted = [...MOCK_STOCKS].sort((a, b) => {
             let comparison = 0;
 
             switch (sortField) {
@@ -75,14 +77,14 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
 
     return (
         <div className="market-table-container glass">
-            <h3>Mercado de Divisas Digitales</h3>
+            <h3>Mercado de Acciones</h3>
             <div className="table-responsive">
-                <table className="currency-table">
+                <table className="stock-table">
                     <thead>
                         <tr>
                             <th className="sortable" onClick={() => handleSort('name')}>
                                 <span className="th-content">
-                                    Moneda <SortIcon field="name" />
+                                    Empresa <SortIcon field="name" />
                                 </span>
                             </th>
                             <th className="sortable" onClick={() => handleSort('price')}>
@@ -104,40 +106,40 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedCurrencies.map((currency) => {
-                            const Icon = currency.icon;
-                            const isSelected = selectedSymbol === currency.symbol;
-                            const isPositive = currency.change >= 0;
+                        {sortedStocks.map((stock) => {
+                            const Icon = stock.icon;
+                            const isSelected = selectedSymbol === stock.symbol;
+                            const isPositive = stock.change >= 0;
 
                             return (
                                 <tr
-                                    key={currency.id}
+                                    key={stock.id}
                                     className={isSelected ? 'selected-row' : ''}
-                                    onClick={() => onSelect(currency)}
+                                    onClick={() => onSelect(stock)}
                                 >
-                                    <td className="coin-info">
-                                        <div className="coin-icon">
+                                    <td className="stock-info">
+                                        <div className="stock-icon">
                                             <Icon size={20} />
                                         </div>
                                         <div>
-                                            <span className="coin-symbol">{currency.symbol}</span>
-                                            <span className="coin-name">{currency.name}</span>
+                                            <span className="stock-symbol">{stock.symbol}</span>
+                                            <span className="stock-name">{stock.name}</span>
                                         </div>
                                     </td>
-                                    <td className="price">${currency.price.toLocaleString()}</td>
+                                    <td className="price">${stock.price.toLocaleString()}</td>
                                     <td className="balance-cell">
-                                        {(balances[currency.symbol] || 0).toFixed(4)} {currency.symbol}
+                                        {(balances[stock.symbol] || 0).toFixed(4)} {stock.symbol}
                                     </td>
                                     <td className={`change ${isPositive ? 'positive' : 'negative'}`}>
                                         {isPositive ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                                        {Math.abs(currency.change)}%
+                                        {Math.abs(stock.change)}%
                                     </td>
                                     <td>
                                         <button
                                             className={`select-btn ${isSelected ? 'active' : ''}`}
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                onSelect(currency);
+                                                onSelect(stock);
                                             }}
                                         >
                                             {isSelected ? 'Seleccionado' : 'Operar'}
@@ -168,13 +170,13 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
                     overflow-x: auto;
                 }
 
-                .currency-table {
+                .stock-table {
                     width: 100%;
                     border-collapse: collapse;
                     color: #cbd5e1;
                 }
 
-                .currency-table th {
+                .stock-table th {
                     text-align: left;
                     padding: 1rem;
                     color: #94a3b8;
@@ -182,13 +184,13 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
                     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
                 }
 
-                .currency-table th.sortable {
+                .stock-table th.sortable {
                     cursor: pointer;
                     user-select: none;
                     transition: background 0.2s, color 0.2s;
                 }
 
-                .currency-table th.sortable:hover {
+                .stock-table th.sortable:hover {
                     background: rgba(255, 255, 255, 0.05);
                     color: #cbd5e1;
                 }
@@ -199,27 +201,27 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
                     gap: 0.5rem;
                 }
 
-                .currency-table td {
+                .stock-table td {
                     padding: 1rem;
                     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
                     vertical-align: middle;
                 }
 
-                .currency-table tr {
+                .stock-table tr {
                     transition: background 0.2s;
                     cursor: pointer;
                 }
 
-                .currency-table tr:hover {
+                .stock-table tr:hover {
                     background: rgba(255, 255, 255, 0.02);
                 }
 
-                .currency-table tr.selected-row {
+                .stock-table tr.selected-row {
                     background: rgba(99, 102, 241, 0.1);
                     border-left: 2px solid #6366f1;
                 }
 
-                .coin-info {
+                .stock-info {
                     display: flex;
                     align-items: center;
                     gap: 1rem;
@@ -231,7 +233,7 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
                     font-weight: 500;
                 }
 
-                .coin-icon {
+                .stock-icon {
                     width: 40px;
                     height: 40px;
                     background: rgba(51, 65, 85, 0.5);
@@ -242,13 +244,13 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
                     color: #e2e8f0;
                 }
 
-                .coin-symbol {
+                .stock-symbol {
                     display: block;
                     font-weight: 600;
                     color: #f8fafc;
                 }
 
-                .coin-name {
+                .stock-name {
                     font-size: 0.85rem;
                     color: #94a3b8;
                 }
