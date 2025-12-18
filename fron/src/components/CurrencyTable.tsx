@@ -1,5 +1,5 @@
 
-import { ArrowUpRight, ArrowDownRight, Bitcoin, Cpu, Globe, Zap, Database, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, Bitcoin, Cpu, Globe, Zap, Database, ArrowUp, ArrowDown, Tag, DollarSign, Wallet, TrendingUp, MousePointer } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
 export interface Currency {
@@ -82,25 +82,29 @@ export default function CurrencyTable({ selectedSymbol, onSelect, balances }: Pr
                         <tr>
                             <th className="sortable" onClick={() => handleSort('name')}>
                                 <span className="th-content">
-                                    Moneda <SortIcon field="name" />
+                                    <Tag size={16} /> Moneda <SortIcon field="name" />
                                 </span>
                             </th>
                             <th className="sortable" onClick={() => handleSort('price')}>
                                 <span className="th-content">
-                                    Precio (USDX) <SortIcon field="price" />
+                                    <DollarSign size={16} /> Precio (USDX) <SortIcon field="price" />
                                 </span>
                             </th>
                             <th className="sortable" onClick={() => handleSort('balance')}>
                                 <span className="th-content">
-                                    Tu Balance <SortIcon field="balance" />
+                                    <Wallet size={16} /> Tu Balance <SortIcon field="balance" />
                                 </span>
                             </th>
                             <th className="sortable" onClick={() => handleSort('change')}>
                                 <span className="th-content">
-                                    Cambio (24h) <SortIcon field="change" />
+                                    <TrendingUp size={16} /> Cambio (24h) <SortIcon field="change" />
                                 </span>
                             </th>
-                            <th>Acción</th>
+                            <th>
+                                <span className="th-content">
+                                    <MousePointer size={16} /> Acción
+                                </span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

@@ -1,4 +1,4 @@
-import { ArrowUpRight, ArrowDownRight, Apple, Search, ShoppingCart, Zap, Cpu, Users, Tv, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, Apple, Search, ShoppingCart, Zap, Cpu, Users, Tv, ArrowUp, ArrowDown, Building2, DollarSign, Wallet, TrendingUp, MousePointer } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
 export interface Stock {
@@ -84,25 +84,29 @@ export default function StockTable({ selectedSymbol, onSelect, balances }: Props
                         <tr>
                             <th className="sortable" onClick={() => handleSort('name')}>
                                 <span className="th-content">
-                                    Empresa <SortIcon field="name" />
+                                    <Building2 size={16} /> Empresa <SortIcon field="name" />
                                 </span>
                             </th>
                             <th className="sortable" onClick={() => handleSort('price')}>
                                 <span className="th-content">
-                                    Precio (USDX) <SortIcon field="price" />
+                                    <DollarSign size={16} /> Precio (USDX) <SortIcon field="price" />
                                 </span>
                             </th>
                             <th className="sortable" onClick={() => handleSort('balance')}>
                                 <span className="th-content">
-                                    Tu Balance <SortIcon field="balance" />
+                                    <Wallet size={16} /> Tu Balance <SortIcon field="balance" />
                                 </span>
                             </th>
                             <th className="sortable" onClick={() => handleSort('change')}>
                                 <span className="th-content">
-                                    Cambio (24h) <SortIcon field="change" />
+                                    <TrendingUp size={16} /> Cambio (24h) <SortIcon field="change" />
                                 </span>
                             </th>
-                            <th>Acción</th>
+                            <th>
+                                <span className="th-content">
+                                    <MousePointer size={16} /> Acción
+                                </span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
